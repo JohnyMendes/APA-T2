@@ -1,6 +1,6 @@
 # Segunda tarea de APA 2023: Manejo de números primos
 
-## Nom i cognoms
+## Nom i cognoms: Johny silva Mendes
 
 ## Fichero `primos.py`
 
@@ -26,7 +26,7 @@ Incluya en el fichero `primos.py` las tres funciones siguientes:
 
 ### Obtención del mínimo común múltiplo y el máximo común divisor
 
-Usando las tres funciones del apartado anterior (y cualquier otra que considere conveniente añadir), escriba otras
+Usando las tres funciones del apartado anterior (y cualquier otra que considere conveniente añadir), escriba otras 
 dos que calculen el máximo común divisor y el mínimo común múltiplo de sus argumentos:
 
 - `mcm(numero1, numero2)`:  Devuelve el mínimo común múltiplo de sus argumentos.
@@ -40,14 +40,6 @@ Estas dos funciones deben cumplir las condiciones siguientes:
 - Aunque también sea sub-óptimo desde el punto de vista de la programación, ninguna de las dos funciones puede
   depender de la otra; cada una debe programarse por separado.
 
-### Obtención del mínimo común múltiplo y el máximo común divisor para un número arbitrario de argumentos
-
-Escriba las funciones `mcmN()` y `mcdN()`, que calculan el mínimo común múltiplo y el máximo común divisor para un
-número arbitrario de argumentos:
-
-- `mcmN(*numeros)`:  Devuelve el mínimo común múltiplo de sus argumentos.
-- `mcdN(*numeros)`:  Devuelve el máximo común divisor de sus argumentos.
-
 ### Tests unitarios
 
 La cadena de documentación del fichero debe incluir los tests unitarios de las cinco funciones. En concreto, deberán
@@ -59,8 +51,6 @@ comprobarse las siguientes condiciones:
 - `descompon(numero)`: Al ejecutar `descompon(36 * 175 * 143)`, la salida debe ser `(2, 2, 3, 3, 5, 5, 7, 11, 13)`.
 - `mcm(num1, num2)`: Al ejecutar `mcm(90, 14)`, la salida debe ser `630`.
 - `mcd(num1, num2)`: Al ejecutar `mcd(924, 780)`, la salida debe ser `12`.
-- `mcmN(numeros)`: Al ejecutar `mcm(42, 60, 70, 63)`, la salida debe ser `1260`.
-- `mcdN(numeros)`: Al ejecutar `mcd(840, 630, 1050, 1470)`, la salida debe ser `210`.
 
 ### Entrega
 
@@ -69,10 +59,100 @@ comprobarse las siguientes condiciones:
 Inserte a continuación una captura de pantalla que muestre el resultado de ejecutar el fichero `primos.py` con la opción
 *verbosa*, de manera que se muestre el resultado de la ejecución de los tests unitarios.
 
+<img src="img/test unitario.png" width="640" align="center">
+
 #### Código desarrollado
 
 Inserte a continuación el contenido del fichero `primos.py` usando los comandos necesarios para que se realice el
 realce sintáctico en Python del mismo.
+
+
+```c
+def esPrimo(numero):
+    """
+    Devuelve `True` si su argumento es primo, y `False` si no lo es.
+
+    >>> [ numero for numero in range(2, 50) if esPrimo(numero) ]
+    [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+    """
+    for prueba in range(2, int(numero**0.5)+1):
+        if numero % prueba == 0: return False 
+
+    return True     
+
+def  primos(numero):
+    """
+    Devuelve una tupla con todos los números primos menores que su argumento.
+
+    >>> primos(50)
+    (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47)
+    """
+    return tuple([prueba for prueba in range(2, numero) if esPrimo(prueba)])
+
+def descompon(numero): 
+
+    """
+    Devuelve una tupla con la descomposición en factores primos de su argumento.
+    >>> descompon(36 * 175 * 143)
+    (2, 2, 3, 3, 5, 5, 7, 11, 13)
+    """
+    factores = []
+    for factor in primos(numero):
+        while numero % factor == 0: 
+            factores.append(factor)
+            numero //= factor
+    if numero > 1:
+        factores.append(numero)        
+    return tuple(factores)
+
+
+def mcm(numero1, numero2):
+
+    """
+    Devuelve el mínimo común múltiplo de sus argumentos.
+
+    >>> mcm(36, 30)
+    180
+
+    """
+    factores1 = descompon(numero1)
+    factores2 = descompon(numero2)
+    factores_comunes = []
+    for i in factores1:
+        if i in factores2:
+            factores_comunes.append(i)
+            factores2 = list(factores2)
+            factores2.remove(i)
+            factores2 = tuple(factores2)
+    factores_totales = factores_comunes + list(factores1) + list(factores2)
+    mcm = 1
+    for i in set(factores_totales):
+        mcm *= i ** max(factores1.count(i), factores2.count(i))
+    return mcm
+
+
+def mcd(numero1, numero2):
+
+    """
+    Devuelve el máximo común divisor de sus argumentos.
+    >>> mcd(924, 780)
+    12
+    
+    """
+    factores1 = list(descompon(numero1))
+    factores2 = list(descompon(numero2))
+    factores_comunes = set(factores1) & set(factores2)
+    if not factores_comunes:
+        return 1
+    else:
+        mcd = 1
+        for i in factores_comunes:
+            mcd *= i ** min(factores1.count(i), factores2.count(i))
+        return mcd    
+
+
+```
+
 
 #### Subida del resultado al repositorio GitHub ¿y *pull-request*?
 
