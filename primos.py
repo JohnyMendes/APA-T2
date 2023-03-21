@@ -88,6 +88,45 @@ def mcd(numero1, numero2):
         for i in factores_comunes:
             mcd *= i ** min(factores1.count(i), factores2.count(i))
         return mcd
+    
+def mcmN(*numeros):
+
+    """
+    Devuelve el mínimo común múltiplo de un número arbitrario de argumentos.
+
+    >>> mcmN(42, 60, 70, 63)
+    1260
+    """
+    if len(numeros) == 2:
+        return mcm(numeros[0], numeros[1])
+    else:
+        # Calcula el mcm de todos los números a la vez
+        m = 1
+        for num in numeros:
+            m = m * num // mcd(m, num)
+        return m
+
+
+def mcdN(*numeros):
+
+    """
+    Devuelve el máximo común divisor de sus argumentos.
+
+    >>> mcdN(840, 630, 1050, 1470)
+    210
+    
+    """
+    # Calcula el máximo común divisor de una lista de números
+    if len(numeros) == 2:
+        return mcd(numeros[0], numeros[1])
+    else:
+        # Calcula el mcd de todos los números a la vez
+        m = mcd(numeros[0], numeros[1])
+        for i in range(2, len(numeros)):
+            m = mcd(m, numeros[i])
+        return m
+
 
 import doctest 
 doctest.testmod()
+
